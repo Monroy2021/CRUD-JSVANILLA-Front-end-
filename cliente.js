@@ -26,7 +26,7 @@ const mostrar = (usuarios) => {
                             <td>${usuario.nombre}</td>
                             <td>${usuario.email}</td>
                             <td>${usuario.prioridad}</td>
-                            <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Borrar</a></td>
+                            <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a data-email ="${usuario.email}"class="btnBorrar btn btn-danger">Borrar</a></td>
                        </tr>
                     `
     })
@@ -57,18 +57,28 @@ const on = (element, event, selector, handler) => {
 on(document, 'click', '.btnBorrar', e => {
     const fila = e.target.parentNode.parentNode
     const id = fila.firstElementChild.innerHTML
-    alertify.confirm("This is a confirm dialog.",
-        function () {
-            fetch(url + id, {
-                method: 'DELETE'
-            })
-                .then(res => res.json())
-                .then(() => location.reload())
-            //alertify.success('Ok')
+    let emailDelete = e.target.dataset.email;
+    alertify.prompt(
+        "Si desea eliminar el usuario con el correo digitelo, si no envie el campo vacio.",
+        `${emailDelete}`,
+        function (evt, value) {
+            //alertify.success("Ok: " + value);
+            if (value == emailDelete && value != "") {
+                fetch(url + id, {
+                    method: "DELETE",
+                })
+                    .then((res) => res.json())
+                    .then(() => location.reload());
+                //alertify.success('Ok')
+                location.reload();
+            } else {
+                alert("no existe el email");
+            }
         },
         function () {
-            alertify.error('Cancel')
-        })
+            alertify.error("Cancel");
+        }
+    );
 })
 
 //Procedimiento Editar
@@ -110,8 +120,10 @@ formUsuario.addEventListener('submit', (e) => {
                 mostrar(nuevoUsuario)
             })
     }
+
+    //console.log('OPCION EDITAR')
     if (opcion == 'editar') {
-        //console.log('OPCION EDITAR')
+
         fetch(url, {
             method: 'POST',
             headers: {
@@ -128,20 +140,26 @@ formUsuario.addEventListener('submit', (e) => {
             .then(response => location.reload())
     }
     modalUsuario.hide()
+})
 
 
-}) 
+
+//Procedimiento Borrar por Email
+
+
+
+
 
 //console.log('OPCION Buscar email')
 
 on(document, 'click', '#btnBuscarEmail', (e) => {
     e.preventDefault();
-    const input = document.getElementById("buscarPorEmail"); 
-    const inp = input.value; 
+    const input = document.getElementById("buscarPorEmail");
+    const inp = input.value;
     const emailUrl = `http://localhost:8080/usuario/email?email=${inp}`;
 
 
-    fetch( emailUrl, {
+    fetch(emailUrl, {
         method: 'GET'
     })
         .then(res => res.json())
