@@ -53,7 +53,7 @@ const on = (element, event, selector, handler) => {
     })
 }
 
-//Procedimiento Borrar
+//Procedimiento Borrar/ Borrar por email
 on(document, 'click', '.btnBorrar', e => {
     const fila = e.target.parentNode.parentNode
     const id = fila.firstElementChild.innerHTML
@@ -141,14 +141,6 @@ formUsuario.addEventListener('submit', (e) => {
     }
     modalUsuario.hide()
 })
-
-
-
-//Procedimiento Borrar por Email
-
-
-
-
 
 //console.log('OPCION Buscar email')
 
